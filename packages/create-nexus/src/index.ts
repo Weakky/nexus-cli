@@ -8,7 +8,7 @@ inquirer.registerPrompt('path', require('inquirer-path').PathPrompt)
 
 const cli = meow(
   `
-    create-yoga [dir]
+    create-nexus [dir]
 
     > Scaffolds the initial files of your project.
 

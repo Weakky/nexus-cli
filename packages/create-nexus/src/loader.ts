@@ -60,7 +60,7 @@ async function downloadRepository(
   await new Promise(resolve => {
     request(tar.uri, {
       headers: {
-        'User-Agent': 'prisma/create-yoga',
+        'User-Agent': 'prisma/create-nexus',
       },
     })
       .pipe(fs.createWriteStream(tmpPath.name))

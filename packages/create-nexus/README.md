@@ -16,6 +16,6 @@ Creator ask for name of template and location where it should be saved
 ? Choose a GraphQL server template? default-yoga (Default Yoga template )
 ? Where should we scaffold graphql server? ./output
 ✔ Downloading starter from https://api.github.com/repos/prisma/yoga2/tarball/master
-✔ Extracting content to yoga2/packages/create-yoga/output
+✔ Extracting content to yoga2/packages/create-nexus/output
 ⠋ Installing dependencies 👩‍🚀
 ```

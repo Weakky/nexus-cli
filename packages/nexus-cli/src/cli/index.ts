@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createTemplate } from "create-yoga";
+import { createTemplate } from "create-nexus";
 import * as yargs from "yargs";
 import scaffold from "./commands/scaffold";
 import generate from "./commands/generate";

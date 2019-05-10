@@ -1,0 +1,61 @@
+{
+  "name": "create-nexus",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "rimraf dist && tsc -d",
+    "build:ci": "yarn build",
+    "pretest": "npm run build && npm run lint",
+    "lint": "tslint {src,test}/**/*.ts",
+    "start": "ts-node src/bin.ts"
+  },
+  "bin": {
+    "create-yoga": "dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "execa": "^1.0.0",
+    "inquirer": "^6.2.0",
+    "inquirer-path": "^1.0.0-beta5",
+    "js-yaml": "^3.12.2",
+    "meow": "^5.0.0",
+    "ora": "^3.2.0",
+    "parse-github-url": "^1.0.2",
+    "prettier": "^1.16.4",
+    "prisma-datamodel": "^1.28.3",
+    "prisma-generate-schema": "^1.28.3",
+    "prisma-json-schema": "^0.1.3",
+    "request": "^2.88.0",
+    "rimraf": "^2.6.3",
+    "tar": "^4.4.7",
+    "update-notifier": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/execa": "0.9.0",
+    "@types/inquirer": "6.0.1",
+    "@types/meow": "5.0.0",
+    "@types/node": "10.14.5",
+    "@types/parse-github-url": "1.0.0",
+    "@types/request": "2.48.1",
+    "@types/rimraf": "2.0.2",
+    "@types/tar": "4.0.0",
+    "@types/tmp": "0.1.0",
+    "@types/update-notifier": "2.5.0",
+    "ts-node": "8.1.0",
+    "tslint": "5.16.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-standard": "8.0.1",
+    "typescript": "3.4.5"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}

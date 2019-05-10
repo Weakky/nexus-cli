@@ -1,0 +1,16 @@
+# Defines your models, each model is mapped to the database as a table.
+datamodel: datamodel.prisma
+
+# Specifies the language and directory for the generated Prisma client.
+generate:
+  - generator: typescript-client
+    output: ../node_modules/@generated/photon
+
+# Ensures Prisma client is re-generated after a datamodel change.
+hooks:
+  post-deploy:
+    - nexus generate
+
+# Seeds initial data into the database by running a script.
+seed:
+  run: npx ts-node ./prisma/seed.ts

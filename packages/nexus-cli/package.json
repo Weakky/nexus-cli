@@ -1,0 +1,52 @@
+{
+  "name": "nexus-cli",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "repository": "https://github.com/prisma/yoga2.git",
+  "author": "Flavian DESVERNE <flavian.desverne@epitech.eu>",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc --declaration",
+    "build:ci": "yarn build",
+    "watch": "tsc -d -w",
+    "lint": "tslint {src,test}/**/*.ts"
+  },
+  "bin": {
+    "nexus": "dist/cli/index.js"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.4.8",
+    "callsite": "^1.0.0",
+    "chalk": "^2.4.2",
+    "chokidar": "^2.1.1",
+    "create-yoga": "0.0.5",
+    "decache": "^4.5.1",
+    "dotenv": "^7.0.0",
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
+    "inquirer": "^6.2.1",
+    "js-yaml": "^3.12.1",
+    "nexus": "0.11.6",
+    "nexus-prisma": "0.3.7",
+    "pluralize": "^7.0.0",
+    "prettier": "^1.16.4",
+    "pretty-error": "2.2.0-rc.1",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3333",
+    "yargs": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/callsite": "^1.0.30",
+    "@types/chokidar": "1.7.5",
+    "@types/dotenv": "6.1.1",
+    "@types/express": "4.16.1",
+    "@types/graphql": "14.2.0",
+    "@types/inquirer": "6.0.1",
+    "@types/js-yaml": "3.12.1",
+    "@types/node": "10.14.5",
+    "@types/pluralize": "0.0.29",
+    "@types/yargs": "13.0.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-standard": "8.0.1"
+  }
+}

@@ -1,7 +1,6 @@
 {
   "name": "nexus-cli-tmp",
   "version": "0.0.1",
-  "main": "dist/index.js",
   "repository": "https://github.com/prisma/yoga2.git",
   "author": "Flavian DESVERNE <flavian.desverne@epitech.eu>",
   "license": "MIT",
@@ -45,6 +44,7 @@
     "@types/js-yaml": "3.12.1",
     "@types/node": "10.14.5",
     "@types/pluralize": "0.0.29",
+    "@types/prettier": "^1.16.3",
     "@types/yargs": "13.0.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "8.0.1"

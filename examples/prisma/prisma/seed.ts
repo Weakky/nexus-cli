@@ -1,4 +1,4 @@
-import { prisma } from '../.yoga/prisma-client'
+import { prisma } from '@generated/photon'
 
 async function main() {
   await prisma.createUser({

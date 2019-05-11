@@ -1,4 +1,4 @@
-import { prismaObjectType } from 'yoga'
+import { prismaObjectType } from '@generated/nexus-prisma'
 
 export const Post = prismaObjectType({
   name: 'Post',

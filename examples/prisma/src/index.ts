@@ -1,14 +1,15 @@
 import { makePrismaSchema } from '@generated/nexus-prisma'
-import { Photon } from '@generated/photon'
+import { prisma } from '@generated/photon'
 import { ApolloServer } from 'apollo-server-express'
 import * as express from 'express'
 import * as path from 'path'
 import * as types from './graphql'
 
-export const nexusConfig = {
+const schema = makePrismaSchema({
   types,
   outputs: {
     schema: path.join(__dirname, './schema.graphql'),
+    typegen: path.join(__dirname, '../node_modules/@types/nexus/nexus.d.ts'),
   },
   typegenAutoConfig: {
     sources: [
@@ -19,25 +20,16 @@ export const nexusConfig = {
     ],
     contextType: 'types.Context',
   },
-}
+})
 
-async function main() {
-  const photon = new Photon({})
-  
-  const schema = makePrismaSchema(nexusConfig)
+const apolloServer = new ApolloServer({
+  schema,
+  context: ({ req }) => ({ req, prisma }),
+})
+const app = express()
 
-  const apolloServer = new ApolloServer({
-    schema,
-    context: ({ req }) => ({ req, photon }),
-  })
-  const app = express()
+apolloServer.applyMiddleware({ app, path: '/' })
 
-  apolloServer.applyMiddleware({ app, path: '/' })
-  await photon.start()
-
-  app.listen({ port: 4000 }, () => {
-    console.log(`🚀  Server ready at http://localhost:4000/`)
-  })
-}
-
-main()
+app.listen({ port: 4000 }, () => {
+  console.log(`🚀  Server ready at http://localhost:4000/`)
+})

@@ -3,7 +3,7 @@ datamodel: datamodel.prisma
 
 # Specifies the language and directory for the generated Prisma client.
 generate:
-  - generator: typescript-client
+  - generator: javascript-client
     output: ../node_modules/@generated/photon
 
 # Ensures Prisma client is re-generated after a datamodel change.

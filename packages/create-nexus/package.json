@@ -21,8 +21,9 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "execa": "^1.0.0",
-    "inquirer": "^6.2.0",
+    "graphql": "14.2.1",
     "inquirer-path": "^1.0.0-beta5",
+    "inquirer": "^6.2.0",
     "js-yaml": "^3.12.2",
     "meow": "^5.0.0",
     "ora": "^3.2.0",

@@ -1,4 +1,4 @@
-import { objectType, stringArg } from 'yoga'
+import { objectType, stringArg } from 'nexus'
 import { User } from './User'
 
 /*

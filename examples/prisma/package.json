@@ -2,21 +2,26 @@
   "name": "prisma-example",
   "version": "0.0.0",
   "scripts": {
-    "build": "yoga generate && tsc",
-    "start": "yoga dev",
+    "build": "nexus generate && tsc",
+    "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
     "migrate": "lift commit",
-    "test": "jest"
+    "test": "jest",
+    "generate": "prisma generate && nexus generate",
+    "postinstall": "yarn generate"
   },
   "dependencies": {
     "apollo-server-express": "2.4.8",
     "express": "4.16.4",
-    "nexus": "0.11.7"
+    "nexus": "0.11.7",
+    "graphql": "14.3.0"
   },
   "devDependencies": {
     "@types/node": "^10.12.11",
     "jest": "24.7.1",
-    "typescript": "3.4.5",
-    "nexus-cli-tmp": "0.0.1"
+    "nexus-cli-tmp": "0.0.1",
+    "prisma": "^1.32.2",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "typescript": "3.4.5"
   },
   "prettier": {
     "semi": false,

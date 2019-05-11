@@ -25,7 +25,7 @@ export const defaultTemplate: Template = {
 Your template has been successfully set up!
   
 Here are the next steps to get you started:
-  1. Run ${chalk.yellow(`yarn dev`)} (Starts the GraphQL server)
+  1. Run ${chalk.yellow(`yarn start`)}
   2. That's it !
   `,
 }
@@ -47,7 +47,7 @@ Here are the next steps to get you started:
   1. Run ${chalk.yellow(
     `yarn prisma deploy`,
   )} (choose a Demo server for a quicker startup)
-  2. Run ${chalk.yellow(`yarn dev`)} (Starts the GraphQL server)
+  2. Run ${chalk.yellow(`yarn start`)}
   3. That's it !
   `,
   },

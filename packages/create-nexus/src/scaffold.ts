@@ -19,26 +19,28 @@ const renameAsync = promisify(fs.rename)
 const PACKAGE_JSON = `\
 {
   "scripts": {
-    "dev": "yoga dev",
-    "build": "yoga build",
-    "start": "yoga start",
-    "scaffold": "yoga scaffold"
+    "build": "nexus generate && tsc",
+    "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
+    "migrate": "lift commit",
+    "test": "jest",
+    "generate": "prisma generate && nexus generate",
+    "postinstall": "yarn generate"
   },
   "dependencies": {
-    "yoga": "0.0.20"
+    "apollo-server-express": "2.4.8",
+    "express": "4.16.4",
+    "nexus": "0.11.7",
+    "graphql": "14.3.0"
   },
   "devDependencies": {
-    "@types/graphql": "^14.0.4",
     "@types/node": "^10.12.11",
-    "@types/ws": "^6.0.1",
-    "prisma": "^1.26.4",
-    "typescript": "^3.3.3"
+    "jest": "24.7.1",
+    "nexus-cli-tmp": "0.0.1",
+    "prisma": "^1.32.2",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "typescript": "3.4.5"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
-  }
+  "license": "MIT"
 }
 `
 
@@ -48,7 +50,7 @@ const TSCONFIG_JSON = `\
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es5",
-    "rootDir": "./",
+    "rootDir": ".",
     "outDir": "dist",
     "sourceMap": true,
     "lib": ["es2015", "esnext.asynciterable", "es2017", "dom"],
@@ -57,7 +59,7 @@ const TSCONFIG_JSON = `\
     "strict": false,
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts", ".yoga/**/*"],
+  "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
 } 
 `
@@ -273,7 +275,7 @@ async function scaffoldGraphQLTypes(
 
 function renderType(typeName: string, fields: string[]) {
   return `\
-import { prismaObjectType } from 'yoga'
+import { prismaObjectType } from '@generated/nexus-prisma'
 
 export const ${typeName} = prismaObjectType({
   name: '${typeName}',
@@ -289,11 +291,15 @@ async function scaffoldContext(
   prettierOptions: prettier.Options,
 ): Promise<void> {
   const contextFile = `\
-import { prisma } from '../.yoga/prisma-client'
+import { Prisma } from '@generated/photon'
 
-export default () => ({ prisma })
+export * from '@generated/photon'
+
+interface Context {
+  prisma: Prisma
+}
   `
-  const contextPath = join(outputPath, 'src', 'context.ts')
+  const contextPath = join(outputPath, 'src', 'types.ts')
 
   await writeFileAsync(contextPath, format(contextFile, prettierOptions))
 }
@@ -305,20 +311,20 @@ async function scaffoldPrismaYml(
   prettierOptions: prettier.Options,
 ): Promise<void> {
   const prismaYmlFile = `\
+  endpoint: ${endpoint}
+
   # Defines your models, each model is mapped to the database as a table.
   datamodel: datamodel.prisma
   
   # Specifies the language and directory for the generated Prisma client.
   generate:
-    - generator: typescript-client
-      output: ../.yoga/prisma-client/
+    - generator: javascript-client
+      output: ../node_modules/@generated/photon
   
-  # Ensures Prisma client is re-generated after a datamodel change.
+  # Ensures code-generation is re-run after datamodel migrations
   hooks:
     post-deploy:
-      - prisma generate
-      - npx nexus-prisma-generate --output ./.yoga/nexus-prisma
-  endpoint: ${endpoint}
+      - yarn nexus generate
   `
   const prismaYmlPath = join(outputPath, PRISMA_FILES_PATH, 'prisma.yml')
 

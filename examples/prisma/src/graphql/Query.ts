@@ -1,4 +1,5 @@
-import { prismaObjectType, stringArg } from 'yoga'
+import { prismaObjectType } from '@generated/nexus-prisma'
+import { stringArg } from 'nexus'
 
 /*
 type Query {
@@ -9,12 +10,6 @@ type Query {
 export const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
-    // All fields from the underlying object type are exposed automatically
-    // use `t.primaFields(['fieldName', ...])` to hide, customize, or select specific fields
-
-    // This removes all fields from the underlying Query object type
-    t.prismaFields([])
-
     t.list.field('feed', {
       type: 'Post',
       resolve: (parent, args, ctx) => {

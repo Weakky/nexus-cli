@@ -10,6 +10,7 @@ import execa = require("execa");
 
 export default async (_argv: Record<string, string>) => {
   const packageJsonPath = findConfigFile("package.json", { required: true });
+  const rootPath = path.dirname(packageJsonPath);
   const hasDb = true;
   const inputTypeQuestion: inquirer.Question<{ inputTypeName: string }> = {
     name: "inputTypeName",
@@ -34,10 +35,8 @@ export default async (_argv: Record<string, string>) => {
 
   if (hasDb) {
     let crudOperations: string[] | null = null;
-    const { datamodelPath, datamodelContent } = getPrismaDatamodel(
-      packageJsonPath
-    );
-    const relativeDatamodelPath = path.relative(packageJsonPath, datamodelPath);
+    const { datamodelPath, datamodelContent } = getPrismaDatamodel(rootPath);
+    const relativeDatamodelPath = path.relative(rootPath, datamodelPath);
 
     while (isModelNameAlreadyDefined(inputTypeName, datamodelContent)) {
       const { inputTypeName: retry } = await inquirer.prompt([
@@ -106,12 +105,12 @@ Before we continue, please do the following steps:
       await runPrismaDeploy();
 
       const filePath = await scaffoldType(
-        packageJsonPath,
+        rootPath,
         typeName,
         hasDb,
         crudOperations
       );
-      const relativePath = path.relative(packageJsonPath, filePath);
+      const relativePath = path.relative(rootPath, filePath);
 
       console.log(`
 Scaffolding of ${relativePath} succesfuly done !
@@ -128,8 +127,8 @@ A few more optional steps:
     process.exit(0);
   }
 
-  const filePath = await scaffoldType(packageJsonPath, typeName, hasDb, null);
-  const relativePath = path.relative(packageJsonPath, filePath);
+  const filePath = await scaffoldType(rootPath, typeName, hasDb, null);
+  const relativePath = path.relative(rootPath, filePath);
 
   console.log(`\
 Scaffolded new file at ${relativePath}
@@ -142,17 +141,12 @@ Next steps:
 };
 
 async function scaffoldType(
-  packageJsonPath: string,
+  rootPath: string,
   typeName: string,
   hasDb: boolean,
   crudOperations: string[] | null
 ): Promise<string> {
-  const typePath = path.join(
-    packageJsonPath,
-    "src",
-    "graphql",
-    `${typeName}.ts`
-  );
+  const typePath = path.join(rootPath, "src", "graphql", `${typeName}.ts`);
 
   if (fs.existsSync(typePath)) {
     throw new Error(`Cannot override existing file at ${typePath}.`);
@@ -179,7 +173,7 @@ function scaffoldTypeWithDb(
   let content = `\
 import { prismaObjectType${
     crudOperations && crudOperations.length > 0 ? ", prismaExtendType" : ""
-  } } from 'yoga'
+  } } from '@generated/nexus-prisma'
   
 export const ${typeName} = prismaObjectType({
   name: '${typeName}',
@@ -228,7 +222,7 @@ export const ${typeName}Mutation = prismaExtendType({
 
 function scaffoldTypeWithoutDb(typeName: string) {
   return `\
-import { objectType } from 'yoga'
+import { objectType } from '@generated/nexus-prisma'
 
 export const ${typeName} = objectType({
   name: '${typeName}',

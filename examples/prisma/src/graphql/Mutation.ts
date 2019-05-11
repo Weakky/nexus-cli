@@ -1,4 +1,5 @@
-import { idArg, prismaObjectType, stringArg } from 'yoga'
+import { prismaObjectType } from '@generated/nexus-prisma'
+import { idArg, stringArg } from 'nexus'
 
 /*
 type Mutation {
@@ -11,12 +12,6 @@ type Mutation {
 export const Mutation = prismaObjectType({
   name: 'Mutation',
   definition(t) {
-    // All fields from the underlying object type are exposed automatically
-    // use `t.primaFields(['fieldName', ...])` to hide, customize, or select specific fields
-
-    // This removes all fields from the underlying Mutation object type
-    t.prismaFields([])
-
     t.field('deletePost', {
       type: 'Post',
       nullable: true,

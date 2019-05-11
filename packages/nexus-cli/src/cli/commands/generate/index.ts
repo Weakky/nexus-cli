@@ -1,38 +1,28 @@
 import { generate as generateNexusPrisma } from "nexus-prisma-generator";
-import { core, makeSchema } from "nexus";
+import { dirname, join } from "path";
+import { register } from "ts-node";
 import { findConfigFile, findPrismaConfigFile } from "../../../config";
-import { join, relative } from "path";
-import { existsSync } from "fs";
+
+register({
+  transpileOnly: true,
+  pretty: true
+});
 
 export default async () => {
   const packageJsonPath = findConfigFile("package.json", { required: true });
-  const prismaYmlPath = findPrismaConfigFile(packageJsonPath);
+  const projectDir = dirname(packageJsonPath);
+  const prismaYmlPath = findPrismaConfigFile(projectDir);
 
-  if (!prismaYmlPath) {
-    throw new Error(
-      `Could not find an "prisma.yml" file at "prisma/prisma.yml"`
-    );
+  if (prismaYmlPath) {
+    await generateNexusPrisma(prismaYmlPath, {
+      clientDir: "@generated/photon",
+      outputPath: join(projectDir, "node_modules", "@generated/nexus-prisma")
+    });
   }
 
-  await generateNexusPrisma(prismaYmlPath, {
-    outputPath: "@generated/nexus-prisma",
-    clientDir: "@generated/photon"
-  });
-
-  const indexTsPath = join(packageJsonPath, "src", "index.ts");
-
-  if (existsSync(indexTsPath)) {
-    throw new Error(
-      `Could not find an "index.ts" file at "${relative(
-        packageJsonPath,
-        indexTsPath
-      )}"`
-    );
-  }
-
-  const nexusConfig = require(indexTsPath);
-  const schema = makeSchema(nexusConfig);
-  new core.TypegenMetadata(nexusConfig).generateArtifacts(schema).catch(e => {
-    console.error(e);
-  });
+  // const { nexusConfig } = require(indexTsPath);
+  // const schema = makeSchema(nexusConfig);
+  // new core.TypegenMetadata(nexusConfig).generateArtifacts(schema).catch(e => {
+  //   console.error(e);
+  // });
 };

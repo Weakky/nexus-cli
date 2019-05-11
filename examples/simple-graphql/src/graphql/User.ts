@@ -1,4 +1,4 @@
-import { objectType } from 'yoga'
+import { objectType } from 'nexus'
 
 /*
 type User {

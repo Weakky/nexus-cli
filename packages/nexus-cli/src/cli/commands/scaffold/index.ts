@@ -159,6 +159,10 @@ async function scaffoldType(
 
   try {
     fs.writeFileSync(typePath, prettify(content, prettierOptions));
+    fs.appendFileSync(
+      path.join(rootPath, "src", "graphql", "index.ts"),
+      `export * from './${typeName}'`
+    );
   } catch (e) {
     console.error(e);
   }

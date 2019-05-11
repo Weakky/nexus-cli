@@ -35,7 +35,7 @@ const PACKAGE_JSON = `\
   "devDependencies": {
     "@types/node": "^10.12.11",
     "jest": "24.7.1",
-    "nexus-cli-tmp": "0.0.1",
+    "nexus-cli-tmp": "0.0.2",
     "prisma": "^1.32.2",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "3.4.5"
@@ -154,7 +154,7 @@ GraphQL server successfully bootstrapped! 🚀
 
 Here are the next steps to get you started:
   1. Run ${chalk.yellow(`yarn prisma deploy`)}
-  2. Run ${chalk.yellow(`yarn dev`)}
+  2. Run ${chalk.yellow(`yarn start`)}
   3. That's it!
 `)
   } catch (e) {

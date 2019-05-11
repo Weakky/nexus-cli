@@ -11,6 +11,7 @@ import { PrismaDefinition } from 'prisma-json-schema'
 import * as rimraf from 'rimraf'
 import { promisify } from 'util'
 import { installYogaStarter } from './loader'
+import { EOL } from 'os'
 
 const writeFileAsync = promisify(fs.writeFile)
 const mkdirAsync = promisify(fs.mkdir)
@@ -19,10 +20,9 @@ const renameAsync = promisify(fs.rename)
 const PACKAGE_JSON = `\
 {
   "scripts": {
-    "build": "nexus generate && tsc",
+    "build": "yarn generate && tsc",
     "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
-    "migrate": "lift commit",
-    "test": "jest",
+    "scaffold": "nexus scaffold",
     "generate": "prisma generate && nexus generate",
     "postinstall": "yarn generate"
   },
@@ -39,6 +39,9 @@ const PACKAGE_JSON = `\
     "prisma": "^1.32.2",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "3.4.5"
+  },
+  "resolutions": {
+    "graphql": "14.3.0"
   },
   "license": "MIT"
 }
@@ -260,17 +263,25 @@ async function scaffoldGraphQLTypes(
 
       return acc
     }, {})
+  const allTypes = { ...fieldsByType, ...objectTypes }
 
-  const filePromises = Object.entries({ ...fieldsByType, ...objectTypes }).map(
-    ([typeName, fields]) => {
-      const renderedType = renderType(typeName, fields)
-      const filePath = join(outputPath, RESOLVERS_PATH, `${typeName}.ts`)
+  const filePromises = Object.entries(allTypes).map(([typeName, fields]) => {
+    const renderedType = renderType(typeName, fields)
+    const filePath = join(outputPath, RESOLVERS_PATH, `${typeName}.ts`)
 
-      return writeFileAsync(filePath, format(renderedType, prettierOptions))
-    },
+    return writeFileAsync(filePath, format(renderedType, prettierOptions))
+  })
+
+  const renderedIndex = Object.keys(allTypes)
+    .map(typeName => `export * from './${typeName}'`)
+    .join(EOL)
+
+  const indexPromise = writeFileAsync(
+    join(outputPath, RESOLVERS_PATH, 'index.ts'),
+    renderedIndex,
   )
 
-  await Promise.all(filePromises)
+  await Promise.all([...filePromises, indexPromise])
 }
 
 function renderType(typeName: string, fields: string[]) {
@@ -295,7 +306,7 @@ import { Prisma } from '@generated/photon'
 
 export * from '@generated/photon'
 
-interface Context {
+export interface Context {
   prisma: Prisma
 }
   `
@@ -324,7 +335,7 @@ async function scaffoldPrismaYml(
   # Ensures code-generation is re-run after datamodel migrations
   hooks:
     post-deploy:
-      - yarn nexus generate
+      - yarn generate
   `
   const prismaYmlPath = join(outputPath, PRISMA_FILES_PATH, 'prisma.yml')
 

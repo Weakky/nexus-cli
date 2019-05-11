@@ -1,7 +1,7 @@
-import { Prisma } from '@generated/photon'
+import { Prisma as Photon } from "@generated/photon";
 
-export * from '@generated/photon'
+export * from "@generated/photon";
 
 export interface Context {
-  prisma: Prisma
+  photon: Photon;
 }

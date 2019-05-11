@@ -35,7 +35,7 @@ const PACKAGE_JSON = `\
   "devDependencies": {
     "@types/node": "^10.12.11",
     "jest": "24.7.1",
-    "nexus-cli-tmp": "0.0.5",
+    "nexus-cli-tmp": "0.0.6",
     "prisma": "1.32.0-beta",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "3.4.5"
@@ -79,7 +79,7 @@ const schema = makePrismaSchema({
   types,
   outputs: {
     schema: path.join(__dirname, "./schema.graphql"),
-    typegen: path.join(__dirname, "../node_modules/@types/nexus/nexus.d.ts")
+    typegen: path.join(__dirname, "../node_modules/@types/nexus/index.d.ts")
   },
   typegenAutoConfig: {
     sources: [

@@ -67,6 +67,44 @@ const TSCONFIG_JSON = `\
 } 
 `
 
+const SERVER_INDEX = `\
+import { makePrismaSchema } from "@generated/nexus-prisma";
+import { prisma as photon } from "@generated/photon";
+import { ApolloServer } from "apollo-server-express";
+import * as express from "express";
+import * as path from "path";
+import * as types from "./graphql";
+
+const schema = makePrismaSchema({
+  types,
+  outputs: {
+    schema: path.join(__dirname, "./schema.graphql"),
+    typegen: path.join(__dirname, "../node_modules/@types/nexus/nexus.d.ts")
+  },
+  typegenAutoConfig: {
+    sources: [
+      {
+        source: path.join(__dirname, "./types.ts"),
+        alias: "types"
+      }
+    ],
+    contextType: "types.Context"
+  }
+});
+
+const apolloServer = new ApolloServer({
+  schema,
+  context: ({ req }) => ({ req, photon })
+});
+const app = express();
+
+apolloServer.applyMiddleware({ app, path: "/" });
+
+app.listen({ port: 4000 }, () => {
+  console.log(\`🚀  Server ready at http://localhost:4000/\`);
+});
+`
+
 const FILES_REQUIRED = ['datamodel.prisma', 'docker-compose.yml', 'prisma.yml']
 const FILES_TO_IGNORE = [
   '.git',
@@ -272,16 +310,21 @@ async function scaffoldGraphQLTypes(
     return writeFileAsync(filePath, format(renderedType, prettierOptions))
   })
 
-  const renderedIndex = Object.keys(allTypes)
+  const renderedTypesIndex = Object.keys(allTypes)
     .map(typeName => `export * from './${typeName}'`)
     .join(EOL)
 
-  const indexPromise = writeFileAsync(
+  const typesIndexPromise = writeFileAsync(
     join(outputPath, RESOLVERS_PATH, 'index.ts'),
-    renderedIndex,
+    format(renderedTypesIndex, prettierOptions),
   )
 
-  await Promise.all([...filePromises, indexPromise])
+  const indexPromise = writeFileAsync(
+    join(outputPath, 'src', 'index.ts'),
+    format(SERVER_INDEX, prettierOptions),
+  )
+
+  await Promise.all([...filePromises, typesIndexPromise, indexPromise])
 }
 
 function renderType(typeName: string, fields: string[]) {

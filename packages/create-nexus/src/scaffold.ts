@@ -21,7 +21,7 @@ const PACKAGE_JSON = `\
 {
   "scripts": {
     "build": "yarn generate && tsc",
-    "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
+    "start": "ts-node-dev --no-notify --transpileOnly --ignore-watch node_modules/@generated --respawn ./src",
     "scaffold": "nexus scaffold",
     "generate": "prisma generate && nexus generate",
     "postinstall": "yarn generate"

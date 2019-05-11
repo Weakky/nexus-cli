@@ -4,8 +4,6 @@
   "scripts": {
     "build": "nexus generate && tsc",
     "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
-    "migrate": "lift commit",
-    "test": "jest",
     "generate": "prisma generate && nexus generate",
     "postinstall": "yarn generate"
   },
@@ -23,10 +21,8 @@
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "3.4.5"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
+  "resolutions": {
+    "graphql": "14.3.0"
   },
   "license": "MIT"
 }

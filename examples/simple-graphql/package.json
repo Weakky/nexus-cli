@@ -2,11 +2,10 @@
   "name": "simple-graphql",
   "version": "0.0.0",
   "scripts": {
-    "build": "nexus generate && tsc",
+    "build": "yarn generate && tsc",
     "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
-    "migrate": "lift commit",
-    "test": "jest",
-    "postinstall": "nexus generate"
+    "generate": "nexus generate",
+    "postinstall": "yarn generate"
   },
   "dependencies": {
     "apollo-server-express": "2.4.8",
@@ -20,10 +19,8 @@
     "typescript": "3.4.5",
     "nexus-cli-tmp": "0.0.2"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
+  "resolutions": {
+    "graphql": "14.3.0"
   },
   "license": "MIT"
 }

@@ -9,7 +9,7 @@ generate:
 # Ensures Prisma client is re-generated after a datamodel change.
 hooks:
   post-deploy:
-    - nexus generate
+    - yarn generate
 
 # Seeds initial data into the database by running a script.
 seed:

@@ -13,7 +13,7 @@ export const Query = prismaObjectType({
     t.list.field('feed', {
       type: 'Post',
       resolve: (parent, args, ctx) => {
-        return ctx.prisma.posts({
+        return ctx.photon.posts({
           where: { published: true },
         })
       },
@@ -25,7 +25,7 @@ export const Query = prismaObjectType({
         searchString: stringArg(),
       },
       resolve: (parent, { searchString }, ctx) => {
-        return ctx.prisma.posts({
+        return ctx.photon.posts({
           where: {
             OR: [
               { title_contains: searchString },

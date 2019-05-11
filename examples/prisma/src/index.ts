@@ -9,7 +9,7 @@ const schema = makePrismaSchema({
   types,
   outputs: {
     schema: path.join(__dirname, "./schema.graphql"),
-    typegen: path.join(__dirname, "../node_modules/@types/nexus/nexus.d.ts")
+    typegen: path.join(__dirname, "../node_modules/@types/nexus/index.d.ts")
   },
   typegenAutoConfig: {
     sources: [

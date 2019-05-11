@@ -19,7 +19,7 @@ export const Mutation = prismaObjectType({
         id: idArg(),
       },
       resolve: (parent, args, ctx) => {
-        return ctx.prisma.deletePost({ id: args.id })
+        return ctx.photon.deletePost({ id: args.id })
       },
     })
 
@@ -30,7 +30,7 @@ export const Mutation = prismaObjectType({
         email: stringArg(),
       },
       resolve: (parent, { name, email }, ctx) => {
-        return ctx.prisma.createUser({ name, email })
+        return ctx.photon.createUser({ name, email })
       },
     })
 
@@ -42,7 +42,7 @@ export const Mutation = prismaObjectType({
         authorEmail: stringArg(),
       },
       resolve: (parent, { title, content, authorEmail }, ctx) => {
-        return ctx.prisma.createPost({
+        return ctx.photon.createPost({
           title,
           content,
           author: { connect: { email: authorEmail } },
@@ -56,7 +56,7 @@ export const Mutation = prismaObjectType({
         id: idArg(),
       },
       resolve: (parent, { id }, ctx) => {
-        return ctx.prisma.updatePost({
+        return ctx.photon.updatePost({
           where: { id },
           data: { published: true },
         })

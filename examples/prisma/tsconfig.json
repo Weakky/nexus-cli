@@ -12,6 +12,6 @@
     "strict": false,
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts", ".yoga/**/*"],
+  "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
 }

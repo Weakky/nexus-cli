@@ -4,6 +4,7 @@
   "scripts": {
     "build": "nexus generate && tsc",
     "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
+    "scaffold": "nexus scaffold",
     "generate": "prisma generate && nexus generate",
     "postinstall": "yarn generate"
   },

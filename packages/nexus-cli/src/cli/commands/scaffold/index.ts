@@ -7,6 +7,7 @@ import { findPrismaConfigFile, findConfigFile } from "../../../config";
 import { prettify, resolvePrettierOptions } from "../../../helpers";
 import { spawnAsync } from "../../spawnAsync";
 import execa = require("execa");
+import { EOL } from "os";
 
 export default async (_argv: Record<string, string>) => {
   const packageJsonPath = findConfigFile("package.json", { required: true });
@@ -161,7 +162,7 @@ async function scaffoldType(
     fs.writeFileSync(typePath, prettify(content, prettierOptions));
     fs.appendFileSync(
       path.join(rootPath, "src", "graphql", "index.ts"),
-      `export * from './${typeName}'`
+      EOL + `export * from './${typeName}'`
     );
   } catch (e) {
     console.error(e);

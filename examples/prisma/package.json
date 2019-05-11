@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/node": "^10.12.11",
     "jest": "24.7.1",
-    "nexus-cli-tmp": "0.0.1",
+    "nexus-cli-tmp": "0.0.2",
     "prisma": "^1.32.2",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "3.4.5"

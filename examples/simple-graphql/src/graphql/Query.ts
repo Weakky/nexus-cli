@@ -1,5 +1,5 @@
-import { objectType, stringArg } from 'nexus'
-import { User } from './User'
+import { objectType, stringArg } from "nexus";
+import { User } from "./User";
 
 /*
 type Query {
@@ -8,20 +8,20 @@ type Query {
 }
 */
 export const Query = objectType({
-  name: 'Query',
+  name: "Query",
   definition(t) {
-    t.string('hello', {
+    t.string("hello", {
       args: {
         name: stringArg(),
       },
-      resolve: (root, { name }) => `Hello ${name}`,
-    })
+      resolve: (root, { name }) => `Hello ${name}`
+    });
 
-    t.list.field('users', {
+    t.list.field("users", {
       type: User,
       resolve: (root, args, ctx) => {
-        return ctx.users
-      },
-    })
-  },
-})
+        return ctx.users;
+      }
+    });
+  }
+});

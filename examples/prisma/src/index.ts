@@ -14,7 +14,7 @@ const schema = makePrismaSchema({
   typegenAutoConfig: {
     sources: [
       {
-        source: path.join(__dirname, "./types.ts"),
+        source: path.join(__dirname, "types.ts"),
         alias: "types"
       }
     ],

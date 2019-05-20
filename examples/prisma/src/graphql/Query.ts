@@ -1,5 +1,5 @@
-import { prismaObjectType } from '@generated/nexus-prisma'
-import { stringArg } from 'nexus'
+import { prismaObjectType } from "@generated/nexus-prisma";
+import { stringArg } from "nexus";
 
 /*
 type Query {
@@ -8,32 +8,32 @@ type Query {
 }
 */
 export const Query = prismaObjectType({
-  name: 'Query',
+  name: "Query",
   definition(t) {
-    t.list.field('feed', {
-      type: 'Post',
+    t.list.field("feed", {
+      type: "Post",
       resolve: (parent, args, ctx) => {
         return ctx.photon.posts({
-          where: { published: true },
-        })
-      },
-    })
+          where: { published: true }
+        });
+      }
+    });
 
-    t.list.field('filterPosts', {
-      type: 'Post',
+    t.list.field("filterPosts", {
+      type: "Post",
       args: {
-        searchString: stringArg(),
+        searchString: stringArg()
       },
       resolve: (parent, { searchString }, ctx) => {
         return ctx.photon.posts({
           where: {
             OR: [
               { title_contains: searchString },
-              { content_contains: searchString },
-            ],
-          },
-        })
-      },
-    })
-  },
-})
+              { content_contains: searchString }
+            ]
+          }
+        });
+      }
+    });
+  }
+});

@@ -1,4 +1,4 @@
-import { objectType } from 'nexus'
+import { objectType } from "nexus";
 
 /*
 type User {
@@ -7,9 +7,9 @@ type User {
 }
 */
 export const User = objectType({
-  name: 'User',
+  name: "User",
   definition(t) {
-    t.id('id')
-    t.string('name')
-  },
-})
+    t.id("id");
+    t.string("name");
+  }
+});

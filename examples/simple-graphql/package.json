@@ -3,21 +3,22 @@
   "version": "0.0.0",
   "scripts": {
     "build": "yarn generate && tsc",
-    "start": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
+    "start": "nexus dev",
     "generate": "nexus generate",
     "postinstall": "yarn generate"
   },
   "dependencies": {
     "apollo-server-express": "2.4.8",
     "express": "4.16.4",
-    "nexus": "0.11.7",
-    "graphql": "14.3.0"
+    "graphql": "14.3.0",
+    "nexus": "0.11.7"
   },
   "devDependencies": {
     "@types/node": "^10.12.11",
     "jest": "24.7.1",
-    "typescript": "3.4.5",
-    "nexus-cli-tmp": "0.0.6"
+    "nexus-cli-tmp": "0.0.6",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "typescript": "3.4.5"
   },
   "resolutions": {
     "graphql": "14.3.0"

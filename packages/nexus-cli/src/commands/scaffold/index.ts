@@ -3,13 +3,49 @@ import * as inquirer from "inquirer";
 import yaml from "js-yaml";
 import * as path from "path";
 import pluralize from "pluralize";
-import { findPrismaConfigFile, findConfigFile } from "../../../config";
-import { prettify, resolvePrettierOptions } from "../../../helpers";
-import { spawnAsync } from "../../spawnAsync";
+import { findPrismaConfigFile, findConfigFile } from "../../helpers/config";
+import { prettify, resolvePrettierOptions } from "../../helpers/helpers";
+import { spawnAsync } from "../../helpers/spawnAsync";
 import execa = require("execa");
 import { EOL } from "os";
+import PCancelable from "p-cancelable";
 
-export default async (_argv: Record<string, string>) => {
+interface CancelablePrompt {
+  <T>(q: inquirer.Questions<T>): PCancelable<T>;
+}
+
+const cancelablePrompt = PCancelable.fn((input: any, onCancel: any) => {
+  const prompt = inquirer.prompt(input);
+
+  onCancel(() => {
+    if (
+      (prompt.ui as any).activePrompt &&
+      typeof (prompt.ui as any).activePrompt.close === "function"
+    ) {
+      (prompt.ui as any).activePrompt.close();
+    }
+  });
+
+  return prompt;
+}) as CancelablePrompt;
+
+async function prompt<T>(
+  q: inquirer.Questions<T>,
+  onPromiseStarted: undefined | ((promise: PCancelable<any>) => void)
+) {
+  const prompt = cancelablePrompt<T>(q);
+
+  if (onPromiseStarted) {
+    onPromiseStarted(prompt);
+  }
+
+  return prompt;
+}
+
+export default async (
+  _argv: Record<string, string>,
+  onPromiseStarted?: (promise: PCancelable<any>) => void
+): PCancelable<void> => {
   const packageJsonPath = findConfigFile("package.json", { required: true });
   const rootPath = path.dirname(packageJsonPath);
   const hasDb = true;
@@ -30,7 +66,7 @@ export default async (_argv: Record<string, string>) => {
     }
   };
 
-  let { inputTypeName } = await inquirer.prompt(inputTypeQuestion);
+  let { inputTypeName } = await prompt(inputTypeQuestion, onPromiseStarted);
 
   const typeName = upperFirst(inputTypeName);
 
@@ -40,44 +76,52 @@ export default async (_argv: Record<string, string>) => {
     const relativeDatamodelPath = path.relative(rootPath, datamodelPath);
 
     while (isModelNameAlreadyDefined(inputTypeName, datamodelContent)) {
-      const { inputTypeName: retry } = await inquirer.prompt([
-        {
-          ...inputTypeQuestion,
-          message:
-            "Type name already defined in your datamodel. Please try another one:"
-        }
-      ]);
+      const { inputTypeName: retry } = await prompt(
+        [
+          {
+            ...inputTypeQuestion,
+            message: `'${inputTypeName}' already defined in your datamodel. Try another one:`
+          }
+        ],
+        onPromiseStarted
+      );
 
       inputTypeName = retry;
     }
 
-    const { exposeCrudOps } = await inquirer.prompt<{ exposeCrudOps: boolean }>(
+    const { exposeCrudOps } = await prompt<{
+      exposeCrudOps: boolean;
+    }>(
       [
         {
           name: "exposeCrudOps",
           message: "Do you want to expose CRUD operations ?",
           type: "confirm"
         }
-      ]
+      ],
+      onPromiseStarted
     );
 
     if (exposeCrudOps) {
-      const { operations } = await inquirer.prompt<{ operations: string[] }>([
-        {
-          name: "operations",
-          message: "Select the operations you would like to expose",
-          type: "checkbox",
-          choices: [
-            new inquirer.Separator("Queries"),
-            `Query.${typeName.toLowerCase()}`,
-            `Query.${pluralize(typeName.toLowerCase())}`,
-            new inquirer.Separator("Mutations"),
-            `Mutation.create${typeName}`,
-            `Mutation.delete${typeName}`,
-            `Mutation.update${typeName}`
-          ]
-        }
-      ]);
+      const { operations } = await prompt<{ operations: string[] }>(
+        [
+          {
+            name: "operations",
+            message: "Select the operations you would like to expose",
+            type: "checkbox",
+            choices: [
+              new inquirer.Separator("Queries"),
+              `Query.${typeName.toLowerCase()}`,
+              `Query.${pluralize(typeName.toLowerCase())}`,
+              new inquirer.Separator("Mutations"),
+              `Mutation.create${typeName}`,
+              `Mutation.delete${typeName}`,
+              `Mutation.update${typeName}`
+            ]
+          }
+        ],
+        onPromiseStarted
+      );
 
       crudOperations = operations;
     }
@@ -94,13 +138,18 @@ Before we continue, please do the following steps:
 3. Confirm with Y once you're done, we'll run \`prisma deploy\` for you
 `);
 
-    const { allStepsDone } = await inquirer.prompt<{ allStepsDone: boolean }>([
-      {
-        name: "allStepsDone",
-        message: "Did you go through all the steps ?",
-        type: "confirm"
-      }
-    ]);
+    const { allStepsDone } = await prompt<{
+      allStepsDone: boolean;
+    }>(
+      [
+        {
+          name: "allStepsDone",
+          message: "Did you go through all the steps ?",
+          type: "confirm"
+        }
+      ],
+      onPromiseStarted
+    );
 
     if (allStepsDone) {
       await runPrismaDeploy();
@@ -124,8 +173,7 @@ A few more optional steps:
     } else {
       console.log("Exiting now.");
     }
-
-    process.exit(0);
+    return;
   }
 
   const filePath = await scaffoldType(rootPath, typeName, hasDb, null);
@@ -299,7 +347,7 @@ function isModelNameAlreadyDefined(modelName: string, datamodelString: string) {
   return datamodelString.includes(`type ${modelName}`);
 }
 
-async function runPrismaDeploy(): Promise<any> {
+export async function runPrismaDeploy(): Promise<any> {
   try {
     if (isYarnInstalled()) {
       if (isPrismaInstalledLocally()) {

@@ -3,12 +3,14 @@ import { createTemplate } from "create-nexus";
 import * as yargs from "yargs";
 import scaffold from "./commands/scaffold";
 import generate from "./commands/generate";
+import dev from "./commands/dev";
 
 function run() {
   // tslint:disable-next-line:no-unused-expression
   yargs
     .usage("Usage: $0 <command> [options]")
     .command("new", "Create new project from template", {}, createTemplate)
+    .command("dev", "Live reload your GraphQL Server", {}, dev)
     .command("scaffold", "Scaffold a new GraphQL type", {}, scaffold)
     .command("generate", "Generate all artifacts", {}, generate)
     .strict(true)

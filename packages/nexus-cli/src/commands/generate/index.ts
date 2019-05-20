@@ -1,12 +1,6 @@
 import { generate as generateNexusPrisma } from "nexus-prisma-generator";
 import { dirname, join } from "path";
-import { register } from "ts-node";
-import { findConfigFile, findPrismaConfigFile } from "../../../config";
-
-register({
-  transpileOnly: true,
-  pretty: true
-});
+import { findConfigFile, findPrismaConfigFile } from "../../helpers/config";
 
 export default async () => {
   const packageJsonPath = findConfigFile("package.json", { required: true });

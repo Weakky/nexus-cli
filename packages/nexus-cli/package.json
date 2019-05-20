@@ -1,12 +1,12 @@
 {
   "name": "nexus-cli-tmp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "repository": "https://github.com/prisma/yoga2.git",
   "author": "Flavian DESVERNE <flavian.desverne@epitech.eu>",
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "tsc --declaration",
+    "build": "rm -rf dist && tsc --declaration && cp ./src/lib/tsnd/*.js dist/lib/tsnd",
     "build:ci": "yarn build",
     "watch": "tsc -d -w",
     "lint": "tslint {src,test}/**/*.ts"

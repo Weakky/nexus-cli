@@ -1,6 +1,6 @@
 {
   "name": "nexus-cli-tmp",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "repository": "https://github.com/prisma/yoga2.git",
   "author": "Flavian DESVERNE <flavian.desverne@epitech.eu>",
   "license": "MIT",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.2",
-    "create-nexus": "0.0.5",
+    "create-nexus": "0.0.9",
     "dateformat": "~1.0.4-1.2.3",
     "dynamic-dedupe": "^0.3.0",
     "filewatcher": "~3.0.0",

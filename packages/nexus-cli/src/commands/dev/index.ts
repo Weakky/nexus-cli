@@ -9,11 +9,10 @@ import generate from "../generate";
 import scaffold, { runPrismaDeploy } from "../scaffold";
 const getCursorPosition = require("get-cursor-position");
 
-readline.emitKeypressEvents(process.stdin);
-
-if (process.stdin.setRawMode) {
-  process.stdin.setRawMode(true);
-}
+let rl = readline.createInterface({
+  terminal: true,
+  input: process.stdin
+});
 
 type CLIState = "NORMAL" | "SCAFFOLDING";
 
@@ -92,9 +91,15 @@ export default async (_args: Record<string, string>) => {
             await scaffold({}, promiseToCancel => {
               cancelablePromise = promiseToCancel;
             });
-          } catch (e) {
-            console.log(e);
+          } catch {
           } finally {
+            // recreate readline after closing prompt
+            rl.close();
+            rl = readline.createInterface({
+              terminal: true,
+              input: process.stdin
+            });
+
             clearConsole();
             logsMuted = false;
             liveReloader.restart();
@@ -105,6 +110,7 @@ export default async (_args: Record<string, string>) => {
         if (key.name === "g") {
           updateBottomMessage("Generating...");
           await generate();
+          liveReloader.restart();
           updateBottomMessage();
         }
 
@@ -135,12 +141,13 @@ export default async (_args: Record<string, string>) => {
         cancelablePromise.cancel("abort");
       }
       liveReloader.stop();
+      rl.close();
       process.stdin.removeAllListeners();
       process.exit(0);
     }
   }
 
-  process.stdin.addListener("keypress", keyPressListener);
+  (rl as any).input.on("keypress", keyPressListener);
 };
 
 function clearBottomLineMessage(pos?: any) {

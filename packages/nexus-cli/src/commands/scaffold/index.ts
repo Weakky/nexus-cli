@@ -18,12 +18,7 @@ const cancelablePrompt = PCancelable.fn((input: any, onCancel: any) => {
   const prompt = inquirer.prompt(input);
 
   onCancel(() => {
-    if (
-      (prompt.ui as any).activePrompt &&
-      typeof (prompt.ui as any).activePrompt.close === "function"
-    ) {
-      (prompt.ui as any).activePrompt.close();
-    }
+    prompt.ui.close();
   });
 
   return prompt;

@@ -8,7 +8,7 @@
     "postinstall": "yarn generate"
   },
   "dependencies": {
-    "apollo-server-express": "2.4.8",
+    "apollo-server-express": "2.14.2",
     "express": "4.16.4",
     "graphql": "14.3.0",
     "nexus": "0.11.7"
